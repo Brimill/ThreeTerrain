@@ -1,26 +1,52 @@
 import { create } from "zustand";
 
 type AppState = {
-    size: number,
-    layers: number,
-    frequencies: number[],
-    amplitudes: number[],
+  size: number,
+  layers: number,
+  frequencies: number[],
+  amplitudes: number[],
+  noiseTextures: HTMLCanvasElement[],
 
-    updateSize: (newSize: number) => void,
-    updateLayers: (newLayers: number) => void,
-    updateFrequences: (newFrequences: number[]) => void,
-    updateAmplitudes: (newAmplitudes: number[]) => void,
+  updateSize: (newSize: number) => void,
+  setLayers: (newLayers: number) => void,
+
+  setFrequencies: (newFrequencies: number[]) => void,
+  addFrequency: (newFrequency: number) => void,
+  removeFrequency: () => void,
+
+  setAmplitudes: (newAmplitudes: number[]) => void,
+  addAmplitude: (newAmplitude: number) => void,
+  removeAmplitude: () => void,
+  setNoiseTextures: (newTextures: HTMLCanvasElement[]) => void,
 }
 
 export const useAppStore = create<AppState>()((set) => ({
-    size: 100,
-    layers: 1,
-    frequencies: [0.001, 0.01, 0.1, 0.2, 0.5],
-    amplitudes: [250, 100, 50, 25, 25],
-    updateSize: (newSize: number) => set({ size: newSize }),
-    updateLayers: (newLayers: number) => set({ layers: newLayers }),
-    updateFrequences: (newFrequences: number[]) => set({ frequencies: newFrequences }),
-    updateAmplitudes: (newAmplitudes: number[]) => set({
-        amplitudes: newAmplitudes
-    })
+  size: 100,
+  layers: 1,
+  frequencies: [1],
+  amplitudes: [1],
+  noiseTextures: [],
+  updateSize: (newSize: number) => set({ size: newSize }),
+  setLayers: (newLayers: number) => set({ layers: newLayers }),
+  setFrequencies: (newFrequencies: number[]) => set({ frequencies: newFrequencies }),
+  addFrequency: (newFrequency: number) => set((state) => ({
+    frequencies: [...state.frequencies, newFrequency]
+  })),
+  removeFrequency: () => set((state) => {
+    const newFrequencies = [...state.frequencies];
+    newFrequencies.pop();
+    return { frequencies: newFrequencies };
+  }),
+  setAmplitudes: (newAmplitudes: number[]) => set({
+    amplitudes: newAmplitudes
+  }),
+  addAmplitude: (newAmplitude: number) => set((state) => ({
+    amplitudes: [...state.amplitudes, newAmplitude]
+  })),
+  removeAmplitude: () => set((state) => {
+    const newAmplitudes = [...state.amplitudes];
+    newAmplitudes.pop();
+    return { amplitudes: newAmplitudes };
+  }),
+  setNoiseTextures: (newTextures: HTMLCanvasElement[]) => set({ noiseTextures: newTextures }),
 }));
