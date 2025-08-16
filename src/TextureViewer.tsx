@@ -92,20 +92,28 @@ function TextureViewer() {
       </Card >
 
 
-      <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border p-4">
+      <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border p-4 items-center">
         {noiseTextures.map((imageData, index) =>
-          <canvas
-            className="aspect-square rounded-xl bg-black"
+          <div
             key={index}
-            ref={(ref) => {
-              if (ref) {
-                const context = ref.getContext("2d");
-                if (context) {
-                  context.putImageData(imageData, 0, 0);
+            className="aspect-square w-64 flex items-center justify-center rounded-xl bg-black overflow-hidden"
+          >
+            <canvas
+              className="w-full h-full"
+              ref={(ref) => {
+                if (ref) {
+                  // ref.width = 1 / 2.5 * ref.offsetWidth;
+                  // ref.height = 1 / 2.5 * ref.offsetHeight;
+                  ref.width = imageData.width;
+                  ref.height = imageData.height;
+                  const context = ref.getContext("2d");
+                  if (context) {
+                    context.putImageData(imageData, 0, 0);
+                  }
                 }
-              }
-            }}>
-          </canvas >
+              }}
+            />
+          </div>
         )}
       </div >
     </div >
