@@ -1,3 +1,4 @@
+import React from "react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ function TextureViewer() {
   const setAmplitudes = useAppStore((state) => state.setAmplitudes);
 
   const noiseLayers = [1];
+  const noiseTextures = useAppStore((state) => state.noiseTextures);
 
   const updateLayers = (newLayers: number) => {
     if (newLayers > layers) {
@@ -91,11 +93,19 @@ function TextureViewer() {
 
 
       <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border p-4">
-        {noiseLayers.map((item) =>
-          <div
-            key={item}
-            className="flex-[1_1_150px] aspect-quare rounded-xl bg-black">
-          </div >
+        {noiseTextures.map((imageData, index) =>
+          <canvas
+            className="aspect-square rounded-xl bg-black"
+            key={index}
+            ref={(ref) => {
+              if (ref) {
+                const context = ref.getContext("2d");
+                if (context) {
+                  context.putImageData(imageData, 0, 0);
+                }
+              }
+            }}>
+          </canvas >
         )}
       </div >
     </div >

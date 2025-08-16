@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
 import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 
 type GroundProps = {
@@ -13,14 +13,16 @@ function Ground() {
   const frequencies: number[] = useAppStore((state) => state.frequencies);
   const amplitudes: number[] = useAppStore((state) => state.amplitudes);
   const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
+  const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  const { texture, canvases } = generateDisplacementMap(size, frequencies, amplitudes);
+  const { displacementTexture: texture, textureLayers: canvases } = generateDisplacementMap(size, frequencies, amplitudes);
   // set the texture in the store
   setNoiseTextures(canvases);
 
+
   return (
     <mesh>
-      <planeGeometry args={[size, size, segments, segments]} />
+      <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
       <meshPhongMaterial color="white" wireframe={true} displacementMap={texture} />
     </mesh>
   )
@@ -30,11 +32,12 @@ function generateDisplacementMap(
   size: number,
   frequencies: number[],
   amplitudes: number[]
-): { texture: THREE.CanvasTexture, canvases: HTMLCanvasElement[] } {
+): { displacementTexture: THREE.CanvasTexture, textureLayers: ImageData[] } {
   if (frequencies.length !== amplitudes.length) {
     throw new Error("Frequencies and amplitudes arrays must have the same length");
   }
   const noiseLayers: NoiseFunction2D[] = frequencies.map(() => createNoise2D());
+  const textureLayers: ImageData[] = []
 
   // const size = 1000;
   // const frequencies = [0.001, 0.01, 0.1, 0.2, 0.5];
@@ -64,7 +67,7 @@ function generateDisplacementMap(
       }
     }
     context.putImageData(imageData, 0, 0);
-    canvases.push(canvas);
+    textureLayers.push(imageData);
   }
   // create accumulated texture from all layers
 
@@ -93,8 +96,8 @@ function generateDisplacementMap(
   // document.body.appendChild(canvas);
 
   return {
-    texture: new THREE.CanvasTexture(canvas),
-    canvases: canvases
+    displacementTexture: new THREE.CanvasTexture(canvas),
+    textureLayers: textureLayers,
   };
 }
 

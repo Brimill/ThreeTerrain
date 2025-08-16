@@ -5,9 +5,9 @@ type AppState = {
   layers: number,
   frequencies: number[],
   amplitudes: number[],
-  noiseTextures: HTMLCanvasElement[],
+  noiseTextures: ImageData[],
 
-  updateSize: (newSize: number) => void,
+  setSize: (newSize: number) => void,
   setLayers: (newLayers: number) => void,
 
   setFrequencies: (newFrequencies: number[]) => void,
@@ -17,7 +17,7 @@ type AppState = {
   setAmplitudes: (newAmplitudes: number[]) => void,
   addAmplitude: (newAmplitude: number) => void,
   removeAmplitude: () => void,
-  setNoiseTextures: (newTextures: HTMLCanvasElement[]) => void,
+  setNoiseTextures: (newTextures: ImageData[]) => void,
 }
 
 export const useAppStore = create<AppState>()((set) => ({
@@ -26,7 +26,7 @@ export const useAppStore = create<AppState>()((set) => ({
   frequencies: [1],
   amplitudes: [1],
   noiseTextures: [],
-  updateSize: (newSize: number) => set({ size: newSize }),
+  setSize: (newSize: number) => set({ size: newSize }),
   setLayers: (newLayers: number) => set({ layers: newLayers }),
   setFrequencies: (newFrequencies: number[]) => set({ frequencies: newFrequencies }),
   addFrequency: (newFrequency: number) => set((state) => ({
@@ -48,5 +48,5 @@ export const useAppStore = create<AppState>()((set) => ({
     newAmplitudes.pop();
     return { amplitudes: newAmplitudes };
   }),
-  setNoiseTextures: (newTextures: HTMLCanvasElement[]) => set({ noiseTextures: newTextures }),
+  setNoiseTextures: (newTextures: ImageData[]) => set({ noiseTextures: newTextures }),
 }));
