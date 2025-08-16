@@ -1,59 +1,101 @@
-import { PlaneGeometry } from "three";
 import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
 import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
+import { useEffect } from "react";
 
 
 type GroundProps = {
-    size: number,
+  size: number,
 }
 
 function Ground() {
-    const size: number = useAppStore((state) => state.size);
-    const segments: number = size;
+  const size: number = useAppStore((state) => state.size);
+  const frequencies: number[] = useAppStore((state) => state.frequencies);
+  const amplitudes: number[] = useAppStore((state) => state.amplitudes);
+  const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
+  const segments: number = size;
+  const { texture, canvases } = generateDisplacementMap(size, frequencies, amplitudes);
+  // set the texture in the store
+  setNoiseTextures(canvases);
 
-    return (
-        <mesh>
-            <planeGeometry args={[size, size, segments, segments]} />
-            <meshPhongMaterial color="white" wireframe={true} />
-        </mesh>
-    )
+  return (
+    <mesh>
+      <planeGeometry args={[size, size, segments, segments]} />
+      <meshPhongMaterial color="white" wireframe={true} displacementMap={texture} />
+    </mesh>
+  )
 }
 
-function generateDisplacementMap(): THREE.CanvasTexture {
-    const noise: NoiseFunction2D = createNoise2D();
-    const size = 1000;
-    const enableSets = [true, true, true, true, true];
-    const frequencies = [0.001, 0.01, 0.1, 0.2, 0.5];
-    const amplitudes = [250, 100, 50, 25, 25];
+function generateDisplacementMap(
+  size: number,
+  frequencies: number[],
+  amplitudes: number[]
+): { texture: THREE.CanvasTexture, canvases: HTMLCanvasElement[] } {
+  if (frequencies.length !== amplitudes.length) {
+    throw new Error("Frequencies and amplitudes arrays must have the same length");
+  }
+  const noiseLayers: NoiseFunction2D[] = frequencies.map(() => createNoise2D());
+
+  // const size = 1000;
+  // const frequencies = [0.001, 0.01, 0.1, 0.2, 0.5];
+  // const amplitudes = [250, 100, 50, 25, 25];
+
+  // create texture for each noise layer
+  const canvases: HTMLCanvasElement[] = [];
+  for (let i = 0; i < noiseLayers.length; i++) {
+    const noise = noiseLayers[i]
+    const frequency = frequencies[i]
+    const amplitude = amplitudes[i]
     const canvas = document.createElement("canvas");
     canvas.width = canvas.height = size;
     const context = canvas.getContext("2d");
     if (context === null) {
-        throw new Error("Could not get 2d context");
+      throw new Error("Could not get 2d context");
     }
     const imageData = context.getImageData(0, 0, size, size);
     const pixels = imageData.data;
 
     for (let x = 0; x < size; x++) {
-        for (let y = 0; y < size; y++) {
-            const value: number = frequencies.reduce((acc, frequency, i) => {
-                if (!enableSets[i]) {
-                    return acc;
-                }
-                return acc + noise(x * frequency, y * frequency) * amplitudes[i];
-            }, 0);
-            // const value: number = noise(x * frequency, y * frequency);
-            const cell: number = (x + y * size) * 4;
-            pixels[cell] = pixels[cell + 1] = pixels[cell + 2] = Math.floor((value)); // grayscale
-            pixels[cell + 3] = 255; // alpha
-        }
+      for (let y = 0; y < size; y++) {
+        const value: number = noise(x * frequency, y * frequency) * amplitude;
+        const cell: number = (x + y * size) * 4;
+        pixels[cell] = pixels[cell + 1] = pixels[cell + 2] = Math.floor(value); // grayscale
+        pixels[cell + 3] = 255; // alpha
+      }
     }
     context.putImageData(imageData, 0, 0);
+    canvases.push(canvas);
+  }
+  // create accumulated texture from all layers
 
-    document.body.appendChild(canvas);
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = size;
+  const context = canvas.getContext("2d");
+  if (context === null) {
+    throw new Error("Could not get 2d context");
+  }
+  const imageData = context.getImageData(0, 0, size, size);
+  const pixels = imageData.data;
 
-    return new THREE.CanvasTexture(canvas);
+  for (let x = 0; x < size; x++) {
+    for (let y = 0; y < size; y++) {
+      const value: number = frequencies.reduce((acc, frequency, i) => {
+        return acc + noiseLayers[i](x * frequency, y * frequency) * amplitudes[i];
+      }, 0);
+      // const value: number = noise(x * frequency, y * frequency);
+      const cell: number = (x + y * size) * 4;
+      pixels[cell] = pixels[cell + 1] = pixels[cell + 2] = Math.floor((value)); // grayscale
+      pixels[cell + 3] = 255; // alpha
+    }
+  }
+  context.putImageData(imageData, 0, 0);
+
+  // document.body.appendChild(canvas);
+
+  return {
+    texture: new THREE.CanvasTexture(canvas),
+    canvases: canvases
+  };
 }
 
 export default Ground;
