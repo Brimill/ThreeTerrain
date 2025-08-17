@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
 import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 
 
 type GroundProps = {
@@ -15,14 +15,28 @@ function Ground() {
   const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  const { displacementTexture: texture, textureLayers: canvases } = generateDisplacementMap(size, frequencies, amplitudes);
-  setNoiseTextures(canvases);
+  let displacementTexture: THREE.CanvasTexture | null = null;
+  let textureLayers: ImageData[] = [];
+
+  const noiseLayers = useMemo<NoiseFunction2D[]>(() => {
+    let noiseArray: NoiseFunction2D[] = [];
+    for (let i = 0; i < 8; i++) {
+      noiseArray.push(createNoise2D());
+    }
+    return noiseArray;
+  }, []);
+
+
+  useEffect(() => {
+    ({ displacementTexture, textureLayers } = generateDisplacementMap(size, frequencies, amplitudes, noiseLayers));
+    setNoiseTextures(textureLayers);
+  }, [frequencies, amplitudes])
 
 
   return (
     <mesh>
       <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
-      <meshPhongMaterial color="white" wireframe={true} displacementMap={texture} />
+      <meshPhongMaterial color="white" wireframe={true} displacementMap={displacementTexture} />
     </mesh>
   )
 }
@@ -30,20 +44,22 @@ function Ground() {
 function generateDisplacementMap(
   size: number,
   frequencies: number[],
-  amplitudes: number[]
+  amplitudes: number[],
+  noiseLayers: NoiseFunction2D[]
 ): { displacementTexture: THREE.CanvasTexture, textureLayers: ImageData[] } {
   if (frequencies.length !== amplitudes.length) {
     throw new Error("Frequencies and amplitudes arrays must have the same length");
   }
-  const noiseLayers: NoiseFunction2D[] = frequencies.map(() => createNoise2D());
+  // const noiseLayers: NoiseFunction2D[] = frequencies.map(() => createNoise2D());
+
   const textureLayers: ImageData[] = []
 
   // const size = 1000;
   // const frequencies = [0.001, 0.01, 0.1, 0.2, 0.5];
   // const amplitudes = [250, 100, 50, 25, 25];
 
-  // create texture for each noise layer
-  for (let i = 0; i < noiseLayers.length; i++) {
+  // create texture for each currently active noise layer
+  for (let i = 0; i < frequencies.length; i++) {
     const noise = noiseLayers[i]
     const frequency = frequencies[i]
     const amplitude = amplitudes[i]
