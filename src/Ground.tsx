@@ -16,7 +16,6 @@ function Ground() {
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
   const { displacementTexture: texture, textureLayers: canvases } = generateDisplacementMap(size, frequencies, amplitudes);
-  // set the texture in the store
   setNoiseTextures(canvases);
 
 
@@ -44,18 +43,12 @@ function generateDisplacementMap(
   // const amplitudes = [250, 100, 50, 25, 25];
 
   // create texture for each noise layer
-  const canvases: HTMLCanvasElement[] = [];
   for (let i = 0; i < noiseLayers.length; i++) {
     const noise = noiseLayers[i]
     const frequency = frequencies[i]
     const amplitude = amplitudes[i]
-    const canvas = document.createElement("canvas");
-    canvas.width = canvas.height = size;
-    const context = canvas.getContext("2d");
-    if (context === null) {
-      throw new Error("Could not get 2d context");
-    }
-    const imageData = context.getImageData(0, 0, size, size);
+
+    const imageData = new ImageData(size, size);
     const pixels = imageData.data;
 
     for (let x = 0; x < size; x++) {
@@ -66,11 +59,9 @@ function generateDisplacementMap(
         pixels[cell + 3] = 255; // alpha
       }
     }
-    context.putImageData(imageData, 0, 0);
     textureLayers.push(imageData);
   }
   // create accumulated texture from all layers
-
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = size;
   const context = canvas.getContext("2d");
@@ -92,8 +83,6 @@ function generateDisplacementMap(
     }
   }
   context.putImageData(imageData, 0, 0);
-
-  // document.body.appendChild(canvas);
 
   return {
     displacementTexture: new THREE.CanvasTexture(canvas),

@@ -22,7 +22,6 @@ function TextureViewer() {
   const removeAmplitude = useAppStore((state) => state.removeAmplitude);
   const setAmplitudes = useAppStore((state) => state.setAmplitudes);
 
-  const noiseLayers = [1];
   const noiseTextures = useAppStore((state) => state.noiseTextures);
 
   const updateLayers = (newLayers: number) => {
@@ -102,8 +101,6 @@ function TextureViewer() {
               className="w-full h-full"
               ref={(ref) => {
                 if (ref) {
-                  // ref.width = 1 / 2.5 * ref.offsetWidth;
-                  // ref.height = 1 / 2.5 * ref.offsetHeight;
                   ref.width = imageData.width;
                   ref.height = imageData.height;
                   const context = ref.getContext("2d");
