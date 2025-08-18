@@ -91,7 +91,7 @@ function TextureViewer() {
       </Card >
 
 
-      <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border p-4 items-center">
+      <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
         {noiseTextures.map((imageData, index) =>
           <div
             key={index}
