@@ -4,19 +4,15 @@ import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
 import { useEffect, useRef, useMemo } from "react";
 
 
-type GroundProps = {
-  size: number,
-}
-
 function Ground() {
   const size: number = useAppStore((state) => state.size);
   const frequencies: number[] = useAppStore((state) => state.frequencies);
   const amplitudes: number[] = useAppStore((state) => state.amplitudes);
+  console.log("Frequencies:", frequencies);
   const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  let displacementTexture: THREE.CanvasTexture | null = null;
-  let textureLayers: ImageData[] = [];
+  const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
 
   const noiseLayers = useMemo<NoiseFunction2D[]>(() => {
     let noiseArray: NoiseFunction2D[] = [];
@@ -28,7 +24,11 @@ function Ground() {
 
 
   useEffect(() => {
-    ({ displacementTexture, textureLayers } = generateDisplacementMap(size, frequencies, amplitudes, noiseLayers));
+    const { displacementTexture, textureLayers } = generateDisplacementMap(size, frequencies, amplitudes, noiseLayers);
+    if (materialRef.current) {
+      materialRef.current.displacementMap = displacementTexture;
+      materialRef.current.needsUpdate = true;
+    }
     setNoiseTextures(textureLayers);
   }, [frequencies, amplitudes])
 
@@ -36,7 +36,7 @@ function Ground() {
   return (
     <mesh>
       <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
-      <meshPhongMaterial color="white" wireframe={true} displacementMap={displacementTexture} />
+      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} />
     </mesh>
   )
 }
