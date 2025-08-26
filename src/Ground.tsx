@@ -8,7 +8,6 @@ function Ground() {
   const size: number = useAppStore((state) => state.size);
   const frequencies: number[] = useAppStore((state) => state.frequencies);
   const amplitudes: number[] = useAppStore((state) => state.amplitudes);
-  console.log("Frequencies:", frequencies);
   const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
@@ -36,7 +35,7 @@ function Ground() {
   return (
     <mesh>
       <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
-      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} />
+      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} displacementScale={3} />
     </mesh>
   )
 }

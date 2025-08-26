@@ -54,17 +54,22 @@ function TextureViewer() {
             {layers}
           </Label>
           <Label htmlFor="frequencies" className="col-start-1 row-start-2 justify-self-end">Frequencies</Label>
-          <Slider
-            id="frequenciesSlider"
-            name="frequencies"
-            className="col-start-2 row-start-2"
-            min={0.001}
-            max={0.5}
-            step={0.001}
-            value={frequencies}
-            onValueChange={(value) => setFrequencies(value)}
-            defaultValue={[1]}
-          />
+          <div className="flex col-start-2 row-start-2 w-full">
+            {frequencies.map((frequency, index) => (
+              <Slider
+                id="frequenciesSlider+{index}"
+                name="frequencies+{index}"
+                className=""
+                min={0.001}
+                max={0.5}
+                step={0.001}
+                value={[frequency]}
+                onValueChange={(value) => setFrequencies(value)}
+                defaultValue={[1]}
+              />
+            ))}
+          </div>
+
           <Label className="col-span-3 row-start-3 text-center">
             {frequencies.join(", ")}
           </Label>
