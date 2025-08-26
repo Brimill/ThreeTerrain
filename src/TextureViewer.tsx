@@ -98,12 +98,12 @@ function TextureViewer() {
 
       <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
         {noiseTextures.map((imageData, index) =>
-          <div
+          <Card
             key={index}
-            className="aspect-square w-64 flex items-center justify-center rounded-xl bg-black overflow-hidden"
+            className="w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
           >
             <canvas
-              className="w-full h-full"
+              className="w-full h-full aspect-square"
               ref={(ref) => {
                 if (ref) {
                   ref.width = imageData.width;
@@ -115,7 +115,16 @@ function TextureViewer() {
                 }
               }}
             />
-          </div>
+            <form className="w-full grid grid-rows-4 grid-cols-[1fr_min-content]">
+              <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Frequency</Label>
+              <Slider className="col-start-1" id="freqSlider+{index}" defaultValue={[1]} />
+              <Label className="col-start-2">1</Label>
+
+              <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Amplitude</Label>
+              <Slider id="ampSlider+{index}" defaultValue={[1]} />
+              <Label className="col-start-2">1</Label>
+            </form>
+          </Card>
         )}
       </div >
     </div >

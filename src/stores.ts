@@ -23,7 +23,7 @@ type AppState = {
 export const useAppStore = create<AppState>()((set) => ({
   size: 100,
   layers: 1,
-  frequencies: [1],
+  frequencies: [1,1,1,1,1,1,1,1],
   amplitudes: [1],
   noiseTextures: [],
   setSize: (newSize: number) => set({ size: newSize }),
