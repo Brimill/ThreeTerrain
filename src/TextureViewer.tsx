@@ -14,13 +14,13 @@ function TextureViewer() {
   const frequencies = useAppStore((state) => state.frequencies);
   const addFrequency = useAppStore((state) => state.addFrequency);
   const removeFrequency = useAppStore((state) => state.removeFrequency);
-  const setFrequencies = useAppStore((state) => state.setFrequencies);
+  const setFrequency = useAppStore((state) => state.setFrequency);
 
   // Amplitudes-related state and actions
   const amplitudes = useAppStore((state) => state.amplitudes);
   const addAmplitude = useAppStore((state) => state.addAmplitude);
   const removeAmplitude = useAppStore((state) => state.removeAmplitude);
-  const setAmplitudes = useAppStore((state) => state.setAmplitudes);
+  const setAmplitude = useAppStore((state) => state.setAmplitude);
 
   const noiseTextures = useAppStore((state) => state.noiseTextures);
 
@@ -38,8 +38,8 @@ function TextureViewer() {
 
   return (
     <div className="size-full">
-      <Card className="w-9/10 h-1/4 m-5 box-border">
-        <CardContent className="h-full grid grid-cols-[min-content_1fr_min-content] grid-rows-6 gap-4 items-center justify-items-center">
+      <Card className="w-9/10 m-5 box-border">
+        <CardContent className="grid grid-cols-[min-content_1fr_min-content] gap-4 items-center justify-items-center">
           <Label htmlFor="layers" className="col-start-1 row-start-1 justify-self-end">Layers</Label>
           <Slider
             id="layerSlider"
@@ -53,43 +53,8 @@ function TextureViewer() {
           <Label className="col-start-3 row-start-1 text-center">
             {layers}
           </Label>
-          <Label htmlFor="frequencies" className="col-start-1 row-start-2 justify-self-end">Frequencies</Label>
-          <div className="flex col-start-2 row-start-2 w-full">
-            {frequencies.map((frequency, index) => (
-              <Slider
-                id="frequenciesSlider+{index}"
-                name="frequencies+{index}"
-                className=""
-                min={0.001}
-                max={0.5}
-                step={0.001}
-                value={[frequency]}
-                onValueChange={(value) => setFrequencies(value)}
-                defaultValue={[1]}
-              />
-            ))}
-          </div>
-
-          <Label className="col-span-3 row-start-3 text-center">
-            {frequencies.join(", ")}
-          </Label>
-          <Label htmlFor="amplitudes" className="col-start-1 row-start-4 justify-self-end">Amplitudes</Label>
-          <Slider
-            id="amplitudesSlider"
-            name="amplitudes"
-            className="col-start-2 row-start-4"
-            min={0}
-            max={500}
-            step={1}
-            value={amplitudes}
-            onValueChange={(value) => setAmplitudes(value)}
-            defaultValue={[1]}
-          />
-          <Label className="col-span-3 row-start-5 text-center">
-            {amplitudes.join(", ")}
-          </Label>
           <Button variant="default"
-            className="col-span-3 row-start-6">
+            className="col-span-3 row-start-2">
             Generate
           </Button>
         </CardContent>
@@ -117,12 +82,12 @@ function TextureViewer() {
             />
             <form className="w-full grid grid-rows-4 grid-cols-[1fr_min-content]">
               <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Frequency</Label>
-              <Slider className="col-start-1" id="freqSlider+{index}" defaultValue={[1]} />
-              <Label className="col-start-2">1</Label>
+              <Slider className="col-start-1" id="freqSlider+{index}" defaultValue={[0.001]} onValueChange={(freq) => setFrequency(index, freq[0])} max={1} step={0.001} />
+              <Label className="col-start-2">{frequencies[index]}</Label>
 
               <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Amplitude</Label>
-              <Slider id="ampSlider+{index}" defaultValue={[1]} />
-              <Label className="col-start-2">1</Label>
+              <Slider id="ampSlider+{index}" defaultValue={[1]} onValueChange={(amp) => setAmplitude(index, amp[0])} max={500} />
+              <Label className="col-start-2">{amplitudes[index]}</Label>
             </form>
           </Card>
         )}
