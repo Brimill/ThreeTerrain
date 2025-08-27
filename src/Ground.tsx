@@ -35,7 +35,7 @@ function Ground() {
   return (
     <mesh>
       <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
-      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} displacementScale={3} />
+      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} displacementScale={255} />
     </mesh>
   )
 }
@@ -92,8 +92,12 @@ function generateDisplacementMap(
         return acc + noiseLayers[i](x * frequency, y * frequency) * amplitudes[i];
       }, 0);
       // const value: number = noise(x * frequency, y * frequency);
+      // normalize to [0, 255]
+      const max = amplitudes.reduce((acc, amp) => acc + Math.abs(amp), 0);
+      const normalized = (value / max) * 255;
+
       const cell: number = (x + y * size) * 4;
-      pixels[cell] = pixels[cell + 1] = pixels[cell + 2] = Math.floor((value)); // grayscale
+      pixels[cell] = pixels[cell + 1] = pixels[cell + 2] = Math.floor((normalized)); // grayscale
       pixels[cell + 3] = 255; // alpha
     }
   }
