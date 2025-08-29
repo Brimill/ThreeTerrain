@@ -36,7 +36,7 @@ function Ground() {
   return (
     <mesh>
       <planeGeometry ref={geometryRef} args={[size, size, segments, segments]} />
-      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} displacementScale={20} />
+      <meshPhongMaterial ref={materialRef} color="white" wireframe={true} displacementScale={10} />
     </mesh>
   )
 }
