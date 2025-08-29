@@ -62,31 +62,33 @@ function TextureViewer() {
 
 
       <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
-        {noiseTextures.map((imageData, index) =>
+        {Array.from({ length: layers }).map((_, index) =>
           <Card
             key={index}
             className="w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
           >
-            <canvas
-              className="w-full h-full aspect-square"
-              ref={(ref) => {
-                if (ref) {
-                  ref.width = imageData.width;
-                  ref.height = imageData.height;
-                  const context = ref.getContext("2d");
-                  if (context) {
-                    context.putImageData(imageData, 0, 0);
+            {noiseTextures[index] && (
+              <canvas
+                className="w-full h-full aspect-square"
+                ref={(ref) => {
+                  if (ref) {
+                    ref.width = noiseTextures[index].width;
+                    ref.height = noiseTextures[index].height;
+                    const context = ref.getContext("2d");
+                    if (context) {
+                      context.putImageData(noiseTextures[index], 0, 0);
+                    }
                   }
-                }
-              }}
-            />
+                }}
+              />
+            )}
             <form className="w-full grid grid-rows-4 grid-cols-[1fr_min-content]">
-              <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Frequency</Label>
-              <Slider className="col-start-1" id="freqSlider+{index}" defaultValue={[0.001]} onValueChange={(freq) => setFrequency(index, freq[0])} max={1} step={0.001} />
+              <Label className="col-start-1 col-span-2" htmlFor={`freqSlider${index}`}>Frequency</Label>
+              <Slider className="col-start-1" id={`freqSlider${index}`} defaultValue={[frequencies[index] ?? 0.001]} onValueChange={(freq) => setFrequency(index, freq[0])} max={0.5} step={0.001} />
               <Label className="col-start-2">{frequencies[index]}</Label>
 
-              <Label className="col-start-1 col-span-2" htmlFor="freqSlider+{index}">Amplitude</Label>
-              <Slider id="ampSlider+{index}" defaultValue={[1]} onValueChange={(amp) => setAmplitude(index, amp[0])} max={500} />
+              <Label className="col-start-1 col-span-2" htmlFor={`ampSlider${index}`}>Amplitude</Label>
+              <Slider id={`ampSlider${index}`} defaultValue={[amplitudes[index] ?? 1]} onValueChange={(amp) => setAmplitude(index, amp[0])} max={500} />
               <Label className="col-start-2">{amplitudes[index]}</Label>
             </form>
           </Card>
