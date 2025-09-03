@@ -33,14 +33,18 @@ function TextureViewer() {
       removeAmplitude();
     }
     setLayers(newLayers);
-  }
-
+  };
 
   return (
     <div className="size-full">
       <Card className="w-9/10 m-5 box-border">
         <CardContent className="grid grid-cols-[min-content_1fr_min-content] gap-4 items-center justify-items-center">
-          <Label htmlFor="layers" className="col-start-1 row-start-1 justify-self-end">Layers</Label>
+          <Label
+            htmlFor="layers"
+            className="col-start-1 row-start-1 justify-self-end"
+          >
+            Layers
+          </Label>
           <Slider
             id="layerSlider"
             name="layers"
@@ -48,21 +52,21 @@ function TextureViewer() {
             min={1}
             max={8}
             step={1}
-            onValueChange={(value) => { updateLayers(value[0]); }}
+            onValueChange={(value) => {
+              updateLayers(value[0]);
+            }}
           />
           <Label className="col-start-3 row-start-1 text-center">
             {layers}
           </Label>
-          <Button variant="default"
-            className="col-span-3 row-start-2">
+          <Button variant="default" className="col-span-3 row-start-2">
             Generate
           </Button>
         </CardContent>
-      </Card >
-
+      </Card>
 
       <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
-        {Array.from({ length: layers }).map((_, index) =>
+        {Array.from({ length: layers }).map((_, index) => (
           <Card
             key={index}
             className="w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
@@ -83,19 +87,41 @@ function TextureViewer() {
               />
             )}
             <form className="w-full grid grid-rows-4 grid-cols-[1fr_min-content]">
-              <Label className="col-start-1 col-span-2" htmlFor={`freqSlider${index}`}>Frequency</Label>
-              <Slider className="col-start-1" id={`freqSlider${index}`} defaultValue={[frequencies[index] ?? 0.001]} onValueChange={(freq) => setFrequency(index, freq[0])} max={0.5} step={0.001} />
+              <Label
+                className="col-start-1 col-span-2"
+                htmlFor={`freqSlider${index}`}
+              >
+                Frequency
+              </Label>
+              <Slider
+                className="col-start-1"
+                id={`freqSlider${index}`}
+                defaultValue={[frequencies[index] ?? 0.001]}
+                onValueChange={(freq) => setFrequency(index, freq[0])}
+                max={0.5}
+                step={0.001}
+              />
               <Label className="col-start-2">{frequencies[index]}</Label>
 
-              <Label className="col-start-1 col-span-2" htmlFor={`ampSlider${index}`}>Amplitude</Label>
-              <Slider id={`ampSlider${index}`} defaultValue={[amplitudes[index] ?? 1]} onValueChange={(amp) => setAmplitude(index, amp[0])} max={500} />
+              <Label
+                className="col-start-1 col-span-2"
+                htmlFor={`ampSlider${index}`}
+              >
+                Amplitude
+              </Label>
+              <Slider
+                id={`ampSlider${index}`}
+                defaultValue={[amplitudes[index] ?? 1]}
+                onValueChange={(amp) => setAmplitude(index, amp[0])}
+                max={500}
+              />
               <Label className="col-start-2">{amplitudes[index]}</Label>
             </form>
           </Card>
-        )}
-      </div >
-    </div >
-  )
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default TextureViewer
+export default TextureViewer;

@@ -27,7 +27,7 @@ function Ground() {
       frequencies,
       amplitudes,
       noiseLayers,
-      layers
+      layers,
     );
     if (materialRef.current) {
       materialRef.current.displacementMap = displacementTexture;
@@ -57,11 +57,11 @@ function generateDisplacementMap(
   frequencies: number[],
   amplitudes: number[],
   noiseLayers: NoiseFunction2D[],
-  layers: number
+  layers: number,
 ): { displacementTexture: THREE.CanvasTexture; textureLayers: ImageData[] } {
   if (frequencies.length !== amplitudes.length) {
     throw new Error(
-      "Frequencies and amplitudes arrays must have the same length"
+      "Frequencies and amplitudes arrays must have the same length",
     );
   }
   // const noiseLayers: NoiseFunction2D[] = frequencies.map(() => createNoise2D());
