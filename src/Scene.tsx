@@ -1,16 +1,29 @@
 import { useThree } from "@react-three/fiber";
 import Ground from "./Ground";
 import { PerspectiveCamera as PerspectiveCameraType } from "three";
-import { OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
+import { PerspectiveCamera } from "@react-three/drei";
 import { useAppStore } from "./stores";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useControls } from "leva";
+import GroundCPU from "./GroundCPU";
+import { TerrainGenerator } from "./TerrainGenerator";
 
 function Scene() {
   const { camera, size: viewportSize } = useThree();
-
+  const { useGPU } = useControls(
+    "Settings",
+    { useGPU: false },
+    { collapsed: true },
+  );
   const size: number = useAppStore((state) => state.size);
+  const frequencies: number[] = useAppStore((state) => state.frequencies);
+  const amplitudes: number[] = useAppStore((state) => state.amplitudes);
   const cameraRef = useRef<PerspectiveCameraType>(null);
   const cameraHeight = size * 1.5;
+  const terrainGenerator = useMemo(
+    () => new TerrainGenerator(frequencies, amplitudes),
+    [],
+  );
 
   useEffect(() => {
     if (!cameraRef.current) return;
@@ -35,7 +48,11 @@ function Scene() {
         ref={cameraRef}
         position={[-size, -size, size / 2]} // X, Y, Z (Z is up)
       />
-      <Ground />
+      {useGPU ? (
+        <Ground terrainGenerator={terrainGenerator} />
+      ) : (
+        <GroundCPU terrainGenerator={terrainGenerator} />
+      )}
     </>
   );
 }
