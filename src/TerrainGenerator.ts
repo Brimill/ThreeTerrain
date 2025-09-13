@@ -109,6 +109,7 @@ export class TerrainGenerator {
       THREE.FloatType,
     );
     texture.needsUpdate = true;
+    texture.flipY = true;
 
     return {
       displacementTexture: texture,

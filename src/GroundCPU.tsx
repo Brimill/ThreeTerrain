@@ -29,13 +29,6 @@ function GroundCPU(props: GroundProps) {
   const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
 
   useEffect(() => {
-    // const { displacementTexture, textureLayers } = generateDisplacementMap(
-    //   size,
-    //   frequencies,
-    //   amplitudes,
-    //   noiseLayers,
-    //   layers,
-    // );
     props.terrainGenerator.setFrequencies(frequencies);
     props.terrainGenerator.setAmplitudes(amplitudes);
     const { textureLayers } = props.terrainGenerator.generateDisplacementMap(
@@ -49,12 +42,16 @@ function GroundCPU(props: GroundProps) {
       for (let i = 0; i < vertices.length; i += 3) {
         const x = vertices[i];
         const y = vertices[i + 1];
+        const xNoise = x + size / 2;
+        const yNoise = -y + size / 2;
         const height = props.terrainGenerator.calculateHeightAtPosition(
-          x,
-          y,
+          xNoise,
+          yNoise,
           layers,
         );
-        console.log(`Vertex ${i / 3}: (${x}, ${y}) -> height: ${height}`);
+        // console.log(
+        //   `Vertex ${i / 3}: (${x}, ${y}) -> ${xNoise}, ${yNoise} -> height: ${height}`,
+        // );
         vertices[i + 2] = height * 0.1;
       }
       position.needsUpdate = true;

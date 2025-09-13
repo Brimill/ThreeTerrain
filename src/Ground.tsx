@@ -43,7 +43,7 @@ function Ground({ terrainGenerator }: GroundProps) {
         ref={materialRef}
         color="white"
         wireframe={true}
-        displacementScale={1}
+        displacementScale={0.1}
       />
     </mesh>
   );
