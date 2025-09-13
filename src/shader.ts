@@ -1,17 +1,30 @@
 import { shaderMaterial } from "@react-three/drei";
-import { extend } from "@react-three/fiber";
 
 export const GroundMaterial = shaderMaterial(
   {},
   // vertex shader
   `
-    varying vec2 vUv;
+    varying float vheight;
     void main(){
-        vUv = uv;
+        vheight = position.z;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }`,
   // fragment shader
-  `void main(){
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  `
+    varying float vheight;
+  void main(){
+    if (vheight < 0.2) {
+      gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+      return;
+    }else if (vheight < 10.0) {
+      gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+      return;
+    }else if (vheight < 20.0) {
+      gl_FragColor = vec4(0.5, 0.35, 0.05, 1.0);
+      return;
+    }else if (vheight < 30.0) {
+      gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+      return;
+    }
 }`,
 );

@@ -1,13 +1,8 @@
 import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
-import { createNoise2D, type NoiseFunction2D } from "simplex-noise";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { GroundMaterial } from "./shader";
 import { extend, type ThreeElement } from "@react-three/fiber";
-import {
-  generateDisplacementMap,
-  TerrainGenerator,
-} from "./TerrainGenerator.ts";
 import type { GroundProps } from "./Ground.tsx";
 
 extend({ GroundMaterial });
@@ -57,27 +52,6 @@ function GroundCPU(props: GroundProps) {
       position.needsUpdate = true;
       geometryRef.current.computeVertexNormals();
     }
-    // if (materialRef.current && geometryRef.current) {
-    //   const position = geometryRef.current?.attributes.position;
-    //   const vertices = position?.array as Float32Array;
-    //   for (let i = 0; i < vertices.length; i += 3) {
-    //     const x = Math.floor(
-    //       ((vertices[i] / size + 0.5) * displacementTexture.image.width) %
-    //         displacementTexture.image.width,
-    //     );
-    //     const y = Math.floor(
-    //       ((vertices[i + 1] / size + 0.5) * displacementTexture.image.height) %
-    //         displacementTexture.image.height,
-    //     );
-    //     const cell = (x + y * displacementTexture.image.width) * 4;
-    //     const height = displacementTexture.image.data[cell] / 255; // assuming grayscale
-    //     vertices[i + 2] = height * 100; // scale height
-    //   }
-    // position.needsUpdate = true;
-    // geometryRef.current.computeVertexNormals();
-    // materialRef.current.displacementMap = displacementTexture;
-    // materialRef.current.needsUpdate = true;
-    // }
     setNoiseTextures(textureLayers);
   }, [frequencies, amplitudes]);
 
@@ -87,8 +61,8 @@ function GroundCPU(props: GroundProps) {
         ref={geometryRef}
         args={[size, size, segments, segments]}
       />
-      <meshPhongMaterial wireframe={true} />
-      {/* <groundMaterial /> */}
+      {/* <meshPhongMaterial wireframe={true} /> */}
+      <groundMaterial />
     </mesh>
   );
 }
