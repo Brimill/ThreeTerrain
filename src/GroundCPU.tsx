@@ -62,7 +62,7 @@ function GroundCPU(props: GroundProps) {
         args={[size, size, segments, segments]}
       />
       {/* <meshPhongMaterial wireframe={true} /> */}
-      <groundMaterial />
+      <groundMaterial key={GroundMaterial.key} />
     </mesh>
   );
 }

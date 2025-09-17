@@ -2,6 +2,10 @@ import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
 import { useEffect, useRef, useMemo } from "react";
 import { TerrainGenerator } from "./TerrainGenerator.ts";
+import { GroundMaterial } from "./shader.ts";
+import { extend } from "@react-three/fiber";
+
+extend(GroundMaterial);
 
 export type GroundProps = {
   terrainGenerator: TerrainGenerator;
@@ -17,7 +21,8 @@ function Ground({ terrainGenerator }: GroundProps) {
 
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
+  // const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
 
   useEffect(() => {
     terrainGenerator.setFrequencies(frequencies);
@@ -27,8 +32,11 @@ function Ground({ terrainGenerator }: GroundProps) {
 
     if (materialRef.current) {
       console.log("Applying displacement map to material", displacementTexture);
-      materialRef.current.displacementMap = displacementTexture;
-      materialRef.current.needsUpdate = true;
+      // materialRef.current.displacementMap = displacementTexture;
+      // materialRef.current.needsUpdate = true;
+
+      materialRef.current.uniforms.heightMap.value = displacementTexture;
+      materialRef.current.uniforms.useHeightMap.value = true;
     }
     setNoiseTextures(textureLayers);
   }, [frequencies, amplitudes]);
@@ -39,12 +47,13 @@ function Ground({ terrainGenerator }: GroundProps) {
         ref={geometryRef}
         args={[size, size, segments, segments]}
       />
-      <meshStandardMaterial
+      {/* <meshStandardMaterial
         ref={materialRef}
         color="white"
         wireframe={true}
         displacementScale={0.1}
-      />
+      /> */}
+      <groundMaterial ref={materialRef} key={GroundMaterial.key} />
     </mesh>
   );
 }
