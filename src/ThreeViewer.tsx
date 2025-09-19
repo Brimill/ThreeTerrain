@@ -7,7 +7,7 @@ function ThreeViewer() {
     <div id="canvas-container" className="size-full bg-muted">
       <Canvas>
         <Scene />
-        <Perf position="bottom-right" deepAnalyze={true} minimal={false} />
+        <Perf position="bottom-right" deepAnalyze={true} minimal={true} />
       </Canvas>
     </div>
   );
