@@ -1,15 +1,15 @@
 import * as THREE from "three";
 import { useAppStore } from "./stores.ts";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import { TerrainGenerator } from "./TerrainGenerator.ts";
 import { GroundMaterial } from "./shader.ts";
 import { extend } from "@react-three/fiber";
 
 extend(GroundMaterial);
 
-export type GroundProps = {
+export interface GroundProps {
   terrainGenerator: TerrainGenerator;
-};
+}
 
 function Ground({ terrainGenerator }: GroundProps) {
   const size: number = useAppStore((state) => state.size);
@@ -39,7 +39,7 @@ function Ground({ terrainGenerator }: GroundProps) {
       materialRef.current.uniforms.useHeightMap.value = true;
     }
     setNoiseTextures(textureLayers);
-  }, [frequencies, amplitudes]);
+  }, [frequencies, amplitudes, layers, size]);
 
   return (
     <mesh>

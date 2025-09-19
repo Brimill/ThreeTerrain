@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type AppState = {
+interface AppState {
   size: number;
   layers: number;
   frequencies: number[];
@@ -20,7 +20,7 @@ type AppState = {
   addAmplitude: (newAmplitude: number) => void;
   removeAmplitude: () => void;
   setNoiseTextures: (newTextures: ImageData[]) => void;
-};
+}
 
 export const useAppStore = create<AppState>()((set) => ({
   size: 200,

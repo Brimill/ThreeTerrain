@@ -68,7 +68,7 @@ function TextureViewer() {
       <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
         {Array.from({ length: layers }).map((_, index) => (
           <Card
-            key={index}
+            key={`texture-{index}`}
             className="w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
           >
             {noiseTextures[index] && (

@@ -9,7 +9,7 @@ export class TerrainGenerator {
   constructor(amplitudes: number[], frequencies: number[]) {
     this.amplitudes = amplitudes;
     this.frequencies = frequencies;
-    let noiseArray: NoiseFunction2D[] = [];
+    const noiseArray: NoiseFunction2D[] = [];
     for (let i = 0; i < 8; i++) {
       noiseArray.push(createNoise2D());
     }

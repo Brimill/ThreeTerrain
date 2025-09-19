@@ -22,6 +22,7 @@ function Scene() {
   const cameraHeight = size * 1.5;
   const terrainGenerator = useMemo(
     () => new TerrainGenerator(frequencies, amplitudes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
