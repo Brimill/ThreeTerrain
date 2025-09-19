@@ -1,8 +1,6 @@
-import { ThemeProvider, useTheme } from "./components/ThemeProvider";
-import { Button } from "./components/ui/button";
+import { ThemeProvider } from "./components/ThemeProvider";
 import TextureViewer from "./TextureViewer";
 import ThreeViewer from "./ThreeViewer";
-import { Sun, Moon } from "lucide-react";
 
 function App() {
   return (

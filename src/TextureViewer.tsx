@@ -126,9 +126,7 @@ function TextureViewer() {
         variant="outline"
         size="icon"
         className="absolute bottom-0 left-0"
-        onClick={(e) => {
-          toggleTheme();
-        }}
+        onClick={() => toggleTheme()}
       >
         <Sun className="h-[1.2rem] w-[1.2rem] scale-200 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
         <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-200 dark:rotate-0" />
