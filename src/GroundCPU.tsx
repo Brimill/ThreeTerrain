@@ -21,7 +21,6 @@ function GroundCPU(props: GroundProps) {
   const setNoiseTextures = useAppStore((state) => state.setNoiseTextures);
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
 
   useEffect(() => {
     props.terrainGenerator.setFrequencies(frequencies);

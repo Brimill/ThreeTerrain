@@ -124,26 +124,26 @@ export class TerrainGenerator {
  * @param size The width and height of the resulting ImageData (size x size)
  * @returns An ImageData object representing the height values as a grayscale image
  */
-function floatArrayToImageData(
-  floatArray: Float32Array,
-  size: number,
-): ImageData {
-  const min = Math.min(...floatArray);
-  const max = Math.max(...floatArray);
-  const range = max - min || 1; // prevent division by zero
+// function floatArrayToImageData(
+//   floatArray: Float32Array,
+//   size: number,
+// ): ImageData {
+//   const min = Math.min(...floatArray);
+//   const max = Math.max(...floatArray);
+//   const range = max - min || 1; // prevent division by zero
 
-  const imageData = new ImageData(size, size);
-  const pixels = imageData.data;
-  for (let i = 0; i < floatArray.length; i++) {
-    const normalized = Math.floor(((floatArray[i] - min) / range) * 255); // normalize to [0, 255]
-    const j = i * 4;
-    pixels[j] = normalized; // R
-    pixels[j + 1] = normalized; // G
-    pixels[j + 2] = normalized; // B
-    pixels[j + 3] = 255; // A
-  }
-  return imageData;
-}
+//   const imageData = new ImageData(size, size);
+//   const pixels = imageData.data;
+//   for (let i = 0; i < floatArray.length; i++) {
+//     const normalized = Math.floor(((floatArray[i] - min) / range) * 255); // normalize to [0, 255]
+//     const j = i * 4;
+//     pixels[j] = normalized; // R
+//     pixels[j + 1] = normalized; // G
+//     pixels[j + 2] = normalized; // B
+//     pixels[j + 3] = 255; // A
+//   }
+//   return imageData;
+// }
 
 export function generateDisplacementMap(
   size: number,
