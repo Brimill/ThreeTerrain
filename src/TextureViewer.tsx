@@ -67,11 +67,11 @@ function TextureViewer() {
         </CardContent>
       </Card>
 
-      <div className="w-full h-3/4 flex flex-wrap justify-center gap-4 box-border items-center">
+      <div className="w-full flex flex-wrap justify-center gap-4 box-border overflow-y-auto">
         {Array.from({ length: layers }).map((_, index) => (
           <Card
             key={`texture-${index}`}
-            className="w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
+            className="w-full sm:w-64 p-3 flex items-center justify-center rounded-xl overflow-hidden"
           >
             {noiseTextures[index] && (
               <canvas
@@ -125,7 +125,7 @@ function TextureViewer() {
       <Button
         variant="outline"
         size="icon"
-        className="absolute bottom-0 left-0"
+        className="fixed bottom-0 left-0"
         onClick={() => toggleTheme()}
       >
         <Sun className="h-[1.2rem] w-[1.2rem] scale-200 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />

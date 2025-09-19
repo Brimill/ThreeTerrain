@@ -4,13 +4,13 @@ import ThreeViewer from "./ThreeViewer";
 
 function App() {
   return (
-    <div className="w-screen h-screen flex">
-      <div className="w-1/2 flex-auto">
+    <div className="w-screen h-screen flex flex-col md:flex-row">
+      <div className="w-full md:w-1/2 md:h-full flex-auto">
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <TextureViewer />
         </ThemeProvider>
       </div>
-      <div className="w-1/2 flex-auto">
+      <div className="w-full md:w-1/2 md:h-full flex-auto">
         <ThreeViewer />
       </div>
     </div>
