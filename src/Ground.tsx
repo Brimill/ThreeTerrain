@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { TerrainGenerator } from "./TerrainGenerator.ts";
 import { GroundMaterial } from "./shader.ts";
 import { extend } from "@react-three/fiber";
+import { useControls } from "leva";
 
 extend(GroundMaterial);
 
@@ -12,6 +13,7 @@ export interface GroundProps {
 }
 
 function Ground({ terrainGenerator }: GroundProps) {
+  const { useGradients } = useControls("Settings", { useGradients: true });
   const size: number = useAppStore((state) => state.size);
   const layers: number = useAppStore((state) => state.layers);
   const frequencies: number[] = useAppStore((state) => state.frequencies);
@@ -28,7 +30,7 @@ function Ground({ terrainGenerator }: GroundProps) {
     terrainGenerator.setFrequencies(frequencies);
     terrainGenerator.setAmplitudes(amplitudes);
     const { displacementTexture, textureLayers } =
-      terrainGenerator.generateDisplacementMap(size, layers);
+      terrainGenerator.generateDisplacementMap(size, layers, useGradients);
 
     if (materialRef.current) {
       console.log("Applying displacement map to material", displacementTexture);

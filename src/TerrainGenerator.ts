@@ -1,6 +1,11 @@
 import * as THREE from "three";
 import { type NoiseFunction2D, createNoise2D } from "simplex-noise";
 
+interface Gradient {
+  gradientX: number;
+  gradientY: number;
+}
+
 export class TerrainGenerator {
   amplitudes: number[];
   frequencies: number[];
@@ -24,6 +29,18 @@ export class TerrainGenerator {
     this.frequencies = frequencies;
   }
 
+  getHeightForNoiseLayer(x: number, y: number, layer: number): number {
+    if (layer < 0 || layer >= this.noiseLayers.length) {
+      throw new Error("Layer index out of bounds");
+    }
+    const height: number =
+      this.noiseLayers[layer](
+        x * this.frequencies[layer],
+        y * this.frequencies[layer],
+      ) * this.amplitudes[layer];
+    return height;
+  }
+
   /**
    * Calculate the height at a given position using the noise layers
    * @param x
@@ -39,11 +56,66 @@ export class TerrainGenerator {
     }
     let height = 0;
     for (let i = 0; i < layers; i++) {
-      height +=
-        this.noiseLayers[i](x * this.frequencies[i], y * this.frequencies[i]) *
-        this.amplitudes[i];
+      height += this.getHeightForNoiseLayer(x, y, i);
     }
     return height;
+  }
+
+  /**
+   *
+   * @param x
+   * @param y
+   * @param layers The amount of layers to use for the calculation
+   * @returns The height at the given position, influenced by the gradient of the noise layers
+   */
+  calculateHeightWithGradientInfluence(
+    x: number,
+    y: number,
+    layers: number,
+  ): number {
+    if (this.frequencies.length !== this.amplitudes.length) {
+      throw new Error(
+        "Frequencies and amplitudes array must have the same length",
+      );
+    }
+    let height = 0;
+    let accumulatedGradient = 0;
+    for (let i = 0; i < layers; i++) {
+      const gradient = this.getGradientForNoiseLayer(x, y, i, 0.01);
+      const gradientSize = Math.sqrt(
+        gradient.gradientX * gradient.gradientX +
+          gradient.gradientY * gradient.gradientY,
+      );
+      accumulatedGradient += gradientSize;
+      const influence = 1 / (1 + accumulatedGradient); // reduce influence with increasing gradient
+      height += influence * this.getHeightForNoiseLayer(x, y, i);
+    }
+    return height;
+  }
+
+  /**
+   *
+   * @param x
+   * @param y
+   * @param layer The noise layer for which to calculate the gradient
+   * @param delta The delta value to use for the finite difference calculation
+   * @returns The gradient at the given position
+   */
+  getGradientForNoiseLayer(
+    x: number,
+    y: number,
+    layer: number,
+    delta = 0.01,
+  ): Gradient {
+    const heightL = this.calculateHeightAtPosition(x - delta, y, layer);
+    const heightR = this.calculateHeightAtPosition(x + delta, y, layer);
+    const heightD = this.calculateHeightAtPosition(x, y - delta, layer);
+    const heightU = this.calculateHeightAtPosition(x, y + delta, layer);
+
+    const gradientX = (heightR - heightL) / (2 * delta);
+    const gradientY = (heightU - heightD) / (2 * delta);
+
+    return { gradientX, gradientY };
   }
 
   /**
@@ -55,6 +127,7 @@ export class TerrainGenerator {
   generateDisplacementMap(
     size: number,
     layers: number,
+    useGradientInfluence = true,
   ): { displacementTexture: THREE.DataTexture; textureLayers: ImageData[] } {
     if (this.frequencies.length !== this.amplitudes.length) {
       throw new Error(
@@ -90,7 +163,19 @@ export class TerrainGenerator {
     const heightMap = new Float32Array(size * size);
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
-        heightMap[x + y * size] = this.calculateHeightAtPosition(x, y, layers);
+        if (useGradientInfluence) {
+          heightMap[x + y * size] = this.calculateHeightWithGradientInfluence(
+            x,
+            y,
+            layers,
+          );
+        } else {
+          heightMap[x + y * size] = this.calculateHeightAtPosition(
+            x,
+            y,
+            layers,
+          );
+        }
       }
     }
 
