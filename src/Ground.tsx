@@ -41,7 +41,7 @@ function Ground({ terrainGenerator }: GroundProps) {
       materialRef.current.uniforms.useHeightMap.value = true;
     }
     setNoiseTextures(textureLayers);
-  }, [frequencies, amplitudes, layers, size]);
+  }, [frequencies, amplitudes, layers, size, useGradients]);
 
   return (
     <mesh>
