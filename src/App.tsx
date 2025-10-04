@@ -1,6 +1,6 @@
-import { ThemeProvider } from "./components/ThemeProvider";
-import TextureViewer from "./TextureViewer";
-import ThreeViewer from "./ThreeViewer";
+import { ThemeProvider } from "@/components/ThemeProvider.tsx";
+import TextureViewer from "@/components/TextureViewer";
+import ThreeViewer from "@/components/ThreeViewer";
 
 function App() {
   return (

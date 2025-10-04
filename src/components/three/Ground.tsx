@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { useAppStore } from "./stores.ts";
+import { useAppStore } from "@/stores.ts";
 import { useEffect, useRef } from "react";
-import { TerrainGenerator } from "./TerrainGenerator.ts";
-import { GroundMaterial } from "./shader.ts";
+import { TerrainGenerator } from "@/TerrainGenerator.ts";
+import { GroundMaterial } from "@/shader.ts";
 import { extend } from "@react-three/fiber";
 import { useControls } from "leva";
 

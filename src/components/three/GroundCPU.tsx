@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { useAppStore } from "./stores.ts";
+import { useAppStore } from "@/stores.ts";
 import { useEffect, useRef } from "react";
-import { GroundMaterial } from "./shader";
+import { GroundMaterial } from "@/shader.ts";
 import { extend, type ThreeElement } from "@react-three/fiber";
-import type { GroundProps } from "./Ground.tsx";
+import type { GroundProps } from "@/components/three/Ground.tsx";
 
 extend({ GroundMaterial });
 

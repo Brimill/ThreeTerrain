@@ -1,10 +1,10 @@
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "./components/ui/card";
-import { useAppStore } from "./stores";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAppStore } from "@/stores.ts";
 import { Sun, Moon } from "lucide-react";
-import { useTheme } from "./components/ThemeProvider";
+import { useTheme } from "@/components/ThemeProvider";
 
 function TextureViewer() {
   const { toggleTheme } = useTheme();
@@ -39,7 +39,7 @@ function TextureViewer() {
 
   return (
     <div className="size-full">
-      <Card className="w-9/10 m-5 box-border">
+      <Card className="w-9/10 m-5 box-border self-center">
         <CardContent className="grid grid-cols-[min-content_1fr_min-content] gap-4 items-center justify-items-center">
           <Label
             htmlFor="layers"

@@ -1,9 +1,9 @@
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
-import Scene from "./Scene";
-import { ToggleGroup, ToggleGroupItem } from "./components/ui/toggle-group";
+import Scene from "@/components/three/Scene";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState } from "react";
-import Scene2 from "./Scene2";
+import Scene2 from "@/components/three/Scene2";
 
 function ThreeViewer() {
   const [showScene1, setShowScene1] = useState<boolean>(true);

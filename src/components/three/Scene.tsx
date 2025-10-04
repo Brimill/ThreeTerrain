@@ -1,14 +1,14 @@
 import { useThree } from "@react-three/fiber";
-import Ground from "./Ground";
+import Ground from "@/components/three/Ground";
 import { PerspectiveCamera as PerspectiveCameraType } from "three";
 import { PerspectiveCamera } from "@react-three/drei";
-import { useAppStore } from "./stores";
+import { useAppStore } from "@/stores.ts";
 import { useEffect, useMemo, useRef } from "react";
 import { useControls } from "leva";
-import GroundCPU from "./GroundCPU";
-import { TerrainGenerator } from "./TerrainGenerator";
+import GroundCPU from "@/components/three/GroundCPU";
+import { TerrainGenerator } from "@/TerrainGenerator";
 
-function Scene2() {
+function Scene() {
   const { camera, size: viewportSize } = useThree();
   const { useGPU } = useControls(
     "Settings",
@@ -58,4 +58,4 @@ function Scene2() {
   );
 }
 
-export default Scene2;
+export default Scene;
