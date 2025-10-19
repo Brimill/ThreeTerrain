@@ -38,7 +38,7 @@ function TextureViewer() {
   };
 
   return (
-    <div className="size-full">
+    <div className="size-full flex flex-col items-center">
       <Card className="w-9/10 m-5 box-border self-center">
         <CardContent className="grid grid-cols-[min-content_1fr_min-content] gap-4 items-center justify-items-center">
           <Label
