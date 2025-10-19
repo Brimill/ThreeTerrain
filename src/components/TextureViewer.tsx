@@ -61,9 +61,6 @@ function TextureViewer() {
           <Label className="col-start-3 row-start-1 text-center">
             {layers}
           </Label>
-          <Button variant="default" className="col-span-3 row-start-2">
-            Generate
-          </Button>
         </CardContent>
       </Card>
 
