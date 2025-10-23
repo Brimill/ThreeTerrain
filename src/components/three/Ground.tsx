@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
 import { useAppStore } from "@/stores.ts";
 import { useEffect, useRef } from "react";
 import { TerrainGenerator } from "@/TerrainGenerator.ts";
@@ -10,11 +11,13 @@ extend(GroundMaterial);
 
 export interface GroundProps {
   terrainGenerator: TerrainGenerator;
+  position: Vector3;
+  size: number;
 }
 
-function Ground({ terrainGenerator }: GroundProps) {
+function Ground({ terrainGenerator, position, size }: GroundProps) {
   const { useGradients } = useControls("Settings", { useGradients: true });
-  const size: number = useAppStore((state) => state.size);
+  // const size: number = useAppStore((state) => state.size);
   const layers: number = useAppStore((state) => state.layers);
   const frequencies: number[] = useAppStore((state) => state.frequencies);
   const amplitudes: number[] = useAppStore((state) => state.amplitudes);
@@ -26,11 +29,23 @@ function Ground({ terrainGenerator }: GroundProps) {
   // const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
 
+  const shiftedOrigin = position.clone();
+  shiftedOrigin.x -= size / 2;
+  shiftedOrigin.y -= size / 2;
+  console.log("Ground position:", position);
+  console.log("Ground shiftedOrigin:", shiftedOrigin);
+
   useEffect(() => {
     terrainGenerator.setFrequencies(frequencies);
     terrainGenerator.setAmplitudes(amplitudes);
+    // Shift origin to the top-left corner of the mesh
     const { displacementTexture, textureLayers } =
-      terrainGenerator.generateDisplacementMap(size, layers, useGradients);
+      terrainGenerator.generateDisplacementMap(
+        size,
+        layers,
+        shiftedOrigin,
+        useGradients,
+      );
 
     if (materialRef.current) {
       console.log("Applying displacement map to material", displacementTexture);
@@ -44,19 +59,25 @@ function Ground({ terrainGenerator }: GroundProps) {
   }, [frequencies, amplitudes, layers, size, useGradients]);
 
   return (
-    <mesh>
-      <planeGeometry
-        ref={geometryRef}
-        args={[size, size, segments, segments]}
-      />
-      {/* <meshStandardMaterial
-        ref={materialRef}
+    <>
+      <mesh position={position}>
+        <planeGeometry
+          ref={geometryRef}
+          args={[size, size, segments, segments]}
+        />
+        {/* <meshStandardMaterial
+        // ref={materialRef}
         color="white"
         wireframe={true}
         displacementScale={0.1}
       /> */}
-      <groundMaterial ref={materialRef} key={GroundMaterial.key} />
-    </mesh>
+        <groundMaterial ref={materialRef} key={GroundMaterial.key} />
+      </mesh>
+      {/* <mesh position={shiftedOrigin}>
+        <sphereGeometry args={[10, 32, 32]} />
+        <meshStandardMaterial color="red" />
+      </mesh> */}
+    </>
   );
 }
 export default Ground;

@@ -2,16 +2,30 @@ import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import Scene from "@/components/three/Scene";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { TerrainGenerator } from "@/TerrainGenerator";
 import Scene2 from "@/components/three/Scene2";
+import { useAppStore } from "@/stores";
 
 function ThreeViewer() {
   const [showScene1, setShowScene1] = useState<boolean>(true);
+  const frequencies: number[] = useAppStore((state) => state.frequencies);
+  const amplitudes: number[] = useAppStore((state) => state.amplitudes);
+  const terrainGenerator = useMemo(
+    () => new TerrainGenerator(frequencies, amplitudes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   return (
     <>
       <div id="canvas-container" className="size-full bg-muted flex flex-col">
         <Canvas>
-          {showScene1 ? <Scene /> : <Scene2 />}
+          {showScene1 ? (
+            <Scene terrainGenerator={terrainGenerator} />
+          ) : (
+            <Scene2 terrainGenerator={terrainGenerator} />
+          )}
           <Perf position="bottom-right" deepAnalyze={true} minimal={true} />
         </Canvas>
         <ToggleGroup

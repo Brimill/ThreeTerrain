@@ -1,14 +1,15 @@
 import { useThree, useFrame } from "@react-three/fiber";
 import Ground from "@/components/three/Ground";
-import { PerspectiveCamera as PerspectiveCameraType } from "three";
+import { PerspectiveCamera as PerspectiveCameraType, Vector3 } from "three";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useAppStore } from "@/stores.ts";
 import { useEffect, useMemo, useRef } from "react";
 import { useControls } from "leva";
 import GroundCPU from "@/components/three/GroundCPU";
-import { TerrainGenerator } from "@/TerrainGenerator";
+import GroundPlane from "./GroundPlane";
+import { type SceneProps } from "./Scene";
 
-function Scene2() {
+function Scene2({ terrainGenerator }: SceneProps) {
   const { camera, size: viewportSize } = useThree();
   const { useGPU } = useControls(
     "Settings",
@@ -16,15 +17,8 @@ function Scene2() {
     { collapsed: true },
   );
   const size: number = useAppStore((state) => state.size);
-  const frequencies: number[] = useAppStore((state) => state.frequencies);
-  const amplitudes: number[] = useAppStore((state) => state.amplitudes);
   const cameraRef = useRef<PerspectiveCameraType>(null);
-  const cameraHeight = size * 1.5;
-  const terrainGenerator = useMemo(
-    () => new TerrainGenerator(frequencies, amplitudes),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  const cameraHeight = size * 4;
 
   useEffect(() => {
     if (!cameraRef.current) return;
@@ -48,17 +42,26 @@ function Scene2() {
 
   return (
     <>
-      <axesHelper args={[size]} />
+      <axesHelper args={[size * 3]} />
       <ambientLight intensity={0.5} />
       <PerspectiveCamera
         makeDefault
         ref={cameraRef}
-        position={[-size, 0, size / 2]} // X, Y, Z (Z is up)
+        position={[0, 0, cameraHeight]} // X, Y, Z (Z is up)
+        // position={[-size, 0, (size / 2) * 10]} // X, Y, Z (Z is up)
       />
       {useGPU ? (
-        <Ground terrainGenerator={terrainGenerator} />
+        <Ground
+          position={new Vector3(0, 0, 0)}
+          size={200}
+          terrainGenerator={terrainGenerator}
+        />
       ) : (
-        <GroundCPU terrainGenerator={terrainGenerator} />
+        // <GroundCPU terrainGenerator={terrainGenerator} />
+        <GroundPlane
+          terrainGenerator={terrainGenerator}
+          cameraRef={cameraRef}
+        />
       )}
     </>
   );

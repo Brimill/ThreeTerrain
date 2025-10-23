@@ -18,6 +18,10 @@ export const GroundMaterial = shaderMaterial(
         }else{
           vheight = position.z;
         }
+        // if(position.x <= 1.0 && position.y <= 1.0){
+        //   vheight = -1000.0; // Out-of-bounds indicator
+        //   newPosition.z = vheight;
+        // }
         gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
     }`,
   // fragment shader
@@ -27,24 +31,26 @@ export const GroundMaterial = shaderMaterial(
     vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
     vec4 sand = vec4(0.76, 0.7, 0.5, 1.0);
     vec4 green = vec4(0.0, 1.0, 0.0, 1.0);
-    vec4 brown = vec4(0.5, 0.35, 0.05, 1.0);
+    vec4 brown = vec4(0.5, 2.35, 0.05, 1.0);
     vec4 gray  = vec4(0.5, 0.5, 0.5, 1.0);
     vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
 
     vec4 color;
 
-    if (vheight < 1.0) {
-    color = blue;
-    }else if (vheight < 10.0) {
+    if (vheight == -1000.0) {
+      color = vec4(0.0, 0.0, 0.0, 1.0); // Black for out-of-bounds
+    } else if (vheight < 1.0) {
+      color = blue;
+    } else if (vheight < 10.0) {
       float t = vheight / 10.0;
       color = mix(sand, green, t);
-    }else if (vheight < 20.0) {
+    } else if (vheight < 20.0) {
       float t = (vheight - 10.0) / 10.0;
       color = mix(green, brown, t);
-    }else if (vheight < 30.0) {
+    } else if (vheight < 30.0) {
       float t = (vheight - 20.0) / 10.0;
       color = mix(brown, gray, t);
-    }else{
+    } else {
       color = white;
     }
     gl_FragColor = color;

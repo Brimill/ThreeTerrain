@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
 import { type NoiseFunction2D, createNoise2D } from "simplex-noise";
 
 interface Gradient {
@@ -127,6 +128,7 @@ export class TerrainGenerator {
   generateDisplacementMap(
     size: number,
     layers: number,
+    offset: Vector3 = new Vector3(0, 0, 0),
     useGradientInfluence = true,
   ): { displacementTexture: THREE.DataTexture; textureLayers: ImageData[] } {
     if (this.frequencies.length !== this.amplitudes.length) {
@@ -148,7 +150,10 @@ export class TerrainGenerator {
 
       for (let x = 0; x < size; x++) {
         for (let y = 0; y < size; y++) {
-          const value: number = noise(x * frequency, y * frequency) * amplitude;
+          const worldX = x + offset.x;
+          const worldY = y + offset.y;
+          const value: number =
+            noise(worldX * frequency, worldY * frequency) * amplitude;
           const cell: number = (x + y * size) * 4;
           pixels[cell] =
             pixels[cell + 1] =
@@ -163,16 +168,18 @@ export class TerrainGenerator {
     const heightMap = new Float32Array(size * size);
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
+        const worldX = x + offset.x;
+        const worldY = y + offset.y;
         if (useGradientInfluence) {
           heightMap[x + y * size] = this.calculateHeightWithGradientInfluence(
-            x,
-            y,
+            worldX,
+            worldY,
             layers,
           );
         } else {
           heightMap[x + y * size] = this.calculateHeightAtPosition(
-            x,
-            y,
+            worldX,
+            worldY,
             layers,
           );
         }
@@ -194,7 +201,7 @@ export class TerrainGenerator {
       THREE.FloatType,
     );
     texture.needsUpdate = true;
-    texture.flipY = true;
+    texture.flipY = false;
 
     return {
       displacementTexture: texture,
