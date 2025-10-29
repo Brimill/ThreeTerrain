@@ -34,11 +34,11 @@ function Scene2({ terrainGenerator }: SceneProps) {
     }
   }, [size, cameraHeight]);
 
-  // useFrame((_state, delta) => {
-  //   if (!cameraRef.current) return;
-  //   const camera = cameraRef.current;
-  //   camera.position.x += delta * 20;
-  // });
+  useFrame((_state, delta) => {
+    if (!cameraRef.current) return;
+    const camera = cameraRef.current;
+    camera.position.x += delta * 20;
+  });
 
   return (
     <>

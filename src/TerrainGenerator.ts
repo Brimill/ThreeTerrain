@@ -153,16 +153,8 @@ export class TerrainGenerator {
         for (let y = 0; y < size; y++) {
           const worldX = x + offset.x;
           const worldY = y + offset.y;
-          let value: number;
-          if (x < 10) {
-            value = 200;
-          } else if (y < 5) {
-            value = 500;
-          } else {
-            value = noise(worldX * frequency, worldY * frequency) * amplitude;
-          }
-          // const value: number =
-          //   noise(worldX * frequency, worldY * frequency) * amplitude;
+          const value: number =
+            noise(worldX * frequency, worldY * frequency) * amplitude;
           const cell: number = (x * size + y) * 4;
           pixels[cell] =
             pixels[cell + 1] =
@@ -180,26 +172,11 @@ export class TerrainGenerator {
         const worldX = x + offset.x;
         const worldY = y + offset.y;
         if (useGradientInfluence) {
-          if (x < 10) {
-            heightMap[x * size + y] = 200;
-            continue;
-          } else if (y < 5) {
-            heightMap[x * size + y] = 500;
-            continue;
-          } else {
-            // heightMap[x * size + y] = 0;
-            heightMap[x * size + y] = this.calculateHeightWithGradientInfluence(
-              worldX,
-              worldY,
-              layers,
-            );
-            continue;
-          }
-          // heightMap[x * size + y] = this.calculateHeightWithGradientInfluence(
-          //   worldX,
-          //   worldY,
-          //   layers,
-          // );
+          heightMap[x * size + y] = this.calculateHeightWithGradientInfluence(
+            worldX,
+            worldY,
+            layers,
+          );
         } else {
           heightMap[x * size + y] = this.calculateHeightAtPosition(
             worldX,
