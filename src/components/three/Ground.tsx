@@ -18,7 +18,6 @@ export interface GroundProps {
 
 function Ground({ terrainGenerator, position, size }: GroundProps) {
   const { useGradients } = useControls("Settings", { useGradients: true });
-  // const size: number = useAppStore((state) => state.size);
   const layers: number = useAppStore((state) => state.layers);
   const frequencies: number[] = useAppStore((state) => state.frequencies);
   const amplitudes: number[] = useAppStore((state) => state.amplitudes);
@@ -27,15 +26,12 @@ function Ground({ terrainGenerator, position, size }: GroundProps) {
 
   const geometryRef = useRef<THREE.PlaneGeometry | null>(null);
   const segments: number = size;
-  // const materialRef = useRef<THREE.MeshPhongMaterial | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
 
   const shiftedOrigin = position.clone();
 
   shiftedOrigin.x += size / 2;
   shiftedOrigin.y += size / 2;
-  console.log("Ground position:", position);
-  console.log("Ground shiftedOrigin:", shiftedOrigin);
 
   useEffect(() => {
     terrainGenerator.setFrequencies(frequencies);
@@ -50,10 +46,6 @@ function Ground({ terrainGenerator, position, size }: GroundProps) {
       );
 
     if (materialRef.current) {
-      console.log("Applying displacement map to material", displacementTexture);
-      // materialRef.current.displacementMap = displacementTexture;
-      // materialRef.current.needsUpdate = true;
-
       materialRef.current.uniforms.heightMap.value = displacementTexture;
       materialRef.current.uniforms.useHeightMap.value = true;
     }
@@ -77,10 +69,6 @@ function Ground({ terrainGenerator, position, size }: GroundProps) {
 
         <Helper type={BoxHelper} args={[0xff0000]} />
       </mesh>
-      {/* <mesh position={shiftedOrigin}>
-        <sphereGeometry args={[10, 32, 32]} />
-        <meshStandardMaterial color="red" />
-      </mesh> */}
     </>
   );
 }

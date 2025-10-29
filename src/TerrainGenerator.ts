@@ -187,13 +187,6 @@ export class TerrainGenerator {
       }
     }
 
-    // console.log("Frequencies:", this.frequencies);
-    // console.log("Amplitudes:", this.amplitudes);
-    // console.log("Height map stats:", {
-    //   minimum: Math.min(...heightMap),
-    //   maximum: Math.max(...heightMap),
-    // });
-
     const texture = new THREE.DataTexture(
       heightMap,
       size,
@@ -201,8 +194,6 @@ export class TerrainGenerator {
       THREE.RedFormat,
       THREE.FloatType,
     );
-    // texture.center.set(0.5, 0.5);
-    // texture.rotation = Math.PI;
 
     texture.needsUpdate = true;
     texture.flipY = false;

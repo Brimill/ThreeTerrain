@@ -1,21 +1,13 @@
 import { useThree, useFrame } from "@react-three/fiber";
-import Ground from "@/components/three/Ground";
-import { PerspectiveCamera as PerspectiveCameraType, Vector3 } from "three";
+import { PerspectiveCamera as PerspectiveCameraType } from "three";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useAppStore } from "@/stores.ts";
-import { useEffect, useMemo, useRef } from "react";
-import { useControls } from "leva";
-import GroundCPU from "@/components/three/GroundCPU";
+import { useEffect, useRef } from "react";
 import GroundPlane from "./GroundPlane";
 import { type SceneProps } from "./Scene";
 
 function Scene2({ terrainGenerator }: SceneProps) {
   const { camera, size: viewportSize } = useThree();
-  const { useGPU } = useControls(
-    "Settings",
-    { useGPU: true },
-    { collapsed: true },
-  );
   const size: number = useAppStore((state) => state.size);
   const cameraRef = useRef<PerspectiveCameraType>(null);
   const cameraHeight = size * 4;

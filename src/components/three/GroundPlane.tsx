@@ -1,29 +1,22 @@
 import { useFrame } from "@react-three/fiber";
 import Ground from "@/components/three/Ground";
 import type { TerrainGenerator } from "@/TerrainGenerator";
-import { BoxHelper, Vector2, Vector3 } from "three";
-import { useMemo, useState, useLayoutEffect } from "react";
-import { Helper } from "@react-three/drei";
+import { Vector2, Vector3 } from "three";
+import { useState, useLayoutEffect } from "react";
 import type { PerspectiveCamera } from "three";
 
 interface GroundPlaneProps {
-  terrainGenerator: TerrainGenerator; // Replace 'any' with the actual type if available
+  terrainGenerator: TerrainGenerator;
   cameraRef: React.RefObject<PerspectiveCamera | null>;
 }
 
 function GroundPlane({ terrainGenerator, cameraRef }: GroundPlaneProps) {
-  // const camPosition = useThree((state) => state.camera.position);
-  // const initialTiles = useMemo(
-  //   () => calcSurroundingTiles(cameraRef.current.position),
-  //   [],
-  // );
   const [tilePositions, setTilePositions] = useState<Vector2[]>([]);
   let timeSinceLastCalc = 0;
 
   useLayoutEffect(() => {
     if (!cameraRef?.current) return;
     const pos = cameraRef.current.position;
-    // run your calculation using pos.x/pos.y/pos.z
     setTilePositions(calcSurroundingTiles(pos));
   }, [cameraRef]);
 
@@ -40,8 +33,6 @@ function GroundPlane({ terrainGenerator, cameraRef }: GroundPlaneProps) {
       return;
     }
     const camPosition = cameraRef.current.position;
-    // console.log("Camera position in useFrame:", camPosition);
-    // console.log(tilePositions);
     timeSinceLastCalc += delta;
     if (timeSinceLastCalc < 1) return;
     timeSinceLastCalc = 0;
@@ -54,16 +45,7 @@ function GroundPlane({ terrainGenerator, cameraRef }: GroundPlaneProps) {
   return (
     <>
       {tilePositions.map((tile) => {
-        // <Ground key={tile.toString()} position={tile} />
-        // console.log("Rendering tile at", tile);
         return (
-          // <mesh key={tile.toString()} position={[tile.x, tile.y, 0]}>
-          //   <planeGeometry args={[200, 200, 200, 200]} />
-          //   <meshStandardMaterial color={"green"} />
-          //   {/* <Helper type={PlaneHelper} /> */}
-
-          //   <Helper type={BoxHelper} args={[0xff0000]} />
-          // </mesh>
           <Ground
             key={tile.x + "," + tile.y}
             position={new Vector3(tile.x, tile.y, 0)}
@@ -78,10 +60,8 @@ function GroundPlane({ terrainGenerator, cameraRef }: GroundPlaneProps) {
 
 function calcSurroundingTiles(position: Vector3) {
   const tileSize = 200;
-  // console.log("Camera position:", position);
   const currentTileX = Math.floor(position.x / tileSize);
   const currentTileY = Math.floor(position.y / tileSize);
-  // console.log("Current tile:", currentTileX, currentTileY);
   const offsets = [
     [0, 0],
     [-1, 0],
