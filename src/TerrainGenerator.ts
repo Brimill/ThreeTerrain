@@ -148,13 +148,22 @@ export class TerrainGenerator {
       const imageData = new ImageData(size, size);
       const pixels = imageData.data;
 
+      // TODO for -100 to 100
       for (let x = 0; x < size; x++) {
         for (let y = 0; y < size; y++) {
           const worldX = x + offset.x;
           const worldY = y + offset.y;
-          const value: number =
-            noise(worldX * frequency, worldY * frequency) * amplitude;
-          const cell: number = (x + y * size) * 4;
+          let value: number;
+          if (x < 10) {
+            value = 200;
+          } else if (y < 5) {
+            value = 500;
+          } else {
+            value = noise(worldX * frequency, worldY * frequency) * amplitude;
+          }
+          // const value: number =
+          //   noise(worldX * frequency, worldY * frequency) * amplitude;
+          const cell: number = (x * size + y) * 4;
           pixels[cell] =
             pixels[cell + 1] =
             pixels[cell + 2] =
@@ -171,13 +180,28 @@ export class TerrainGenerator {
         const worldX = x + offset.x;
         const worldY = y + offset.y;
         if (useGradientInfluence) {
-          heightMap[x + y * size] = this.calculateHeightWithGradientInfluence(
-            worldX,
-            worldY,
-            layers,
-          );
+          if (x < 10) {
+            heightMap[x * size + y] = 200;
+            continue;
+          } else if (y < 5) {
+            heightMap[x * size + y] = 500;
+            continue;
+          } else {
+            // heightMap[x * size + y] = 0;
+            heightMap[x * size + y] = this.calculateHeightWithGradientInfluence(
+              worldX,
+              worldY,
+              layers,
+            );
+            continue;
+          }
+          // heightMap[x * size + y] = this.calculateHeightWithGradientInfluence(
+          //   worldX,
+          //   worldY,
+          //   layers,
+          // );
         } else {
-          heightMap[x + y * size] = this.calculateHeightAtPosition(
+          heightMap[x * size + y] = this.calculateHeightAtPosition(
             worldX,
             worldY,
             layers,
@@ -200,6 +224,9 @@ export class TerrainGenerator {
       THREE.RedFormat,
       THREE.FloatType,
     );
+    // texture.center.set(0.5, 0.5);
+    // texture.rotation = Math.PI;
+
     texture.needsUpdate = true;
     texture.flipY = false;
 

@@ -16,7 +16,7 @@ function Scene({ terrainGenerator }: SceneProps) {
   const { camera, size: viewportSize } = useThree();
   const { useGPU } = useControls(
     "Settings",
-    { useGPU: false },
+    { useGPU: true },
     { collapsed: true },
   );
   const size: number = useAppStore((state) => state.size);
@@ -44,8 +44,14 @@ function Scene({ terrainGenerator }: SceneProps) {
       <PerspectiveCamera
         makeDefault
         ref={cameraRef}
-        position={[-size, -size, size / 2]} // X, Y, Z (Z is up)
+        position={[size, 0, size / 2]} // X, Y, Z (Z is up)
       />
+
+      {/* <PerspectiveCamera
+        makeDefault
+        ref={cameraRef}
+        position={[size, size, size / 2]} // X, Y, Z (Z is up)
+      /> */}
       {useGPU ? (
         <Ground
           position={new Vector3(0, 0, 0)}

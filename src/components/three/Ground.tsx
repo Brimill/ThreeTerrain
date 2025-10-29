@@ -1,5 +1,6 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
+import { Helper } from "@react-three/drei";
+import { Vector3, BoxHelper } from "three";
 import { useAppStore } from "@/stores.ts";
 import { useEffect, useRef } from "react";
 import { TerrainGenerator } from "@/TerrainGenerator.ts";
@@ -30,8 +31,9 @@ function Ground({ terrainGenerator, position, size }: GroundProps) {
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
 
   const shiftedOrigin = position.clone();
-  shiftedOrigin.x -= size / 2;
-  shiftedOrigin.y -= size / 2;
+
+  shiftedOrigin.x += size / 2;
+  shiftedOrigin.y += size / 2;
   console.log("Ground position:", position);
   console.log("Ground shiftedOrigin:", shiftedOrigin);
 
@@ -72,6 +74,8 @@ function Ground({ terrainGenerator, position, size }: GroundProps) {
         displacementScale={0.1}
       /> */}
         <groundMaterial ref={materialRef} key={GroundMaterial.key} />
+
+        <Helper type={BoxHelper} args={[0xff0000]} />
       </mesh>
       {/* <mesh position={shiftedOrigin}>
         <sphereGeometry args={[10, 32, 32]} />

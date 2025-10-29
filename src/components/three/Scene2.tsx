@@ -13,7 +13,7 @@ function Scene2({ terrainGenerator }: SceneProps) {
   const { camera, size: viewportSize } = useThree();
   const { useGPU } = useControls(
     "Settings",
-    { useGPU: false },
+    { useGPU: true },
     { collapsed: true },
   );
   const size: number = useAppStore((state) => state.size);
@@ -34,11 +34,11 @@ function Scene2({ terrainGenerator }: SceneProps) {
     }
   }, [size, cameraHeight]);
 
-  useFrame((_state, delta) => {
-    if (!cameraRef.current) return;
-    const camera = cameraRef.current;
-    camera.position.x += delta * 20;
-  });
+  // useFrame((_state, delta) => {
+  //   if (!cameraRef.current) return;
+  //   const camera = cameraRef.current;
+  //   camera.position.x += delta * 20;
+  // });
 
   return (
     <>
@@ -50,19 +50,7 @@ function Scene2({ terrainGenerator }: SceneProps) {
         position={[0, 0, cameraHeight]} // X, Y, Z (Z is up)
         // position={[-size, 0, (size / 2) * 10]} // X, Y, Z (Z is up)
       />
-      {useGPU ? (
-        <Ground
-          position={new Vector3(0, 0, 0)}
-          size={200}
-          terrainGenerator={terrainGenerator}
-        />
-      ) : (
-        // <GroundCPU terrainGenerator={terrainGenerator} />
-        <GroundPlane
-          terrainGenerator={terrainGenerator}
-          cameraRef={cameraRef}
-        />
-      )}
+      <GroundPlane terrainGenerator={terrainGenerator} cameraRef={cameraRef} />
     </>
   );
 }

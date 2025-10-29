@@ -9,7 +9,9 @@ export const GroundMaterial = shaderMaterial(
     varying float vheight;
 
     void main(){
-        vec4 heightData = texture2D(heightMap, uv);
+        // vec4 heightData = texture2D(heightMap, uv);
+        vec4 heightData = texture2D(heightMap, vec2(uv.y, uv.x));
+
         vec3 newPosition = position;
         if(useHeightMap){
           float height = heightData.r * 0.1;
