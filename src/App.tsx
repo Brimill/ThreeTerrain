@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="w-screen h-screen flex flex-col md:flex-row">
       <div className="w-full md:w-1/2 md:h-full flex-auto">
-        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <TextureViewer />
         </ThemeProvider>
       </div>
