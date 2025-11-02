@@ -197,6 +197,8 @@ export class TerrainGenerator {
 
     texture.needsUpdate = true;
     texture.flipY = false;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
 
     return {
       displacementTexture: texture,
